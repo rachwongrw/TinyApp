@@ -1,0 +1,22 @@
+<!-- views/partials/_header.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>TinyApp</title>
+</head>
+<header>
+        <% include ./partials/_header %>
+    </header>
+<body>
+    <h2>The long URL and its shortened form</h2>
+
+    <ul>
+            <li><%= longURL %> - <%= shortURL %></li>
+    </ul>
+
+    <a href='#'>Some Link</a> 
+    <!-- Add your EJS code here -->
+</body>
+</html>
+
