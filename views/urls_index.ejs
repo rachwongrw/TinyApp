@@ -13,11 +13,13 @@
 
     <ul>
         <% for (shortURL in urls) { %>
-            <li><a href='/urls/<%= shortURL %>'><%= shortURL %></a> - <%= urls[shortURL]%></li>
+            <li><a href='/urls/<%= shortURL %>'><%= shortURL %></a> --> <%= urls[shortURL]%><form method ="POST" action="/urls/<%= shortURL %>/delete"><button type="submit">Delete</button></form></li>
         <% }; %>
     </ul>
 
-    <a href='#'>Some Link</a> | <form method ="POST" action="/urls/9sm5xK/delete">...</form>"
+    <a href='/urls/new'>Home</a>
+    
+    
     <!-- Add your EJS code here -->
 </body>
 </html>
