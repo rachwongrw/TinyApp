@@ -23,11 +23,12 @@ app.get("/urls/new", (req, res) => {
     res.render("urls_new");
 })
 
+//Add - New URL 
 app.post("/urls", (req, res) => {
     let newURLid = generateRandomString(6);
     let newlongURL = req.body.longURL;
     urlDatabase[newURLid] = newlongURL;
-    console.log(urlDatabase);
+    // console.log(urlDatabase);
     res.redirect('/urls/' + newURLid);
 });
 
@@ -50,11 +51,13 @@ app.post("/urls/:id/delete", (req, res) => {
     delete urlDatabase[req.params.id];
     res.redirect('/urls');
 });
-//Update
+
+//Update URL 
 app.post("/urls/:id", (req, res) => {
     let shortURL = req.params.id;
     let newLongURL = req.body.newLongURL;
     urlDatabase[shortURL] = newLongURL;
+    console.log("Database: " + JSON.stringify(urlDatabase));
     res.redirect('/urls');
 });
 
