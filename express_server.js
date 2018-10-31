@@ -28,7 +28,6 @@ app.post("/urls", (req, res) => {
     let newlongURL = req.body.longURL;
     urlDatabase[newURLid] = newlongURL;
     console.log(urlDatabase);
-    // res.send("Ok");
     res.redirect('/urls/' + newURLid);
 });
 
@@ -40,7 +39,6 @@ app.get("/urls/:id", (req, res) => {
 app.get("/u/:shortURL", (req, res) => {
     let shortURL = req.params.shortURL;
     let longURL = urlDatabase[req.params.shortURL];
-    // console.log(shortURL);
     res.redirect(longURL);
 });
 
@@ -50,6 +48,13 @@ app.get("/urls.json", (req, res) => {
 
 app.post("/urls/:id/delete", (req, res) => {
     delete urlDatabase[req.params.id];
+    res.redirect('/urls');
+});
+//Update
+app.post("/urls/:id", (req, res) => {
+    let shortURL = req.params.id;
+    let newLongURL = req.body.newLongURL;
+    urlDatabase[shortURL] = newLongURL;
     res.redirect('/urls');
 });
 

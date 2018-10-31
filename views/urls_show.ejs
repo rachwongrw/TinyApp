@@ -15,7 +15,11 @@
             <li><%= longURL %> - <%= shortURL %></li>
     </ul>
 
-    <a href='/urls/new'>Home</a> <form method ="POST" action="/urls/:id/delete"><button type="submit">Delete</button></form>
+    <a href='/urls/new'>Home</a> 
+    <form method ="POST" action="/urls/<%= shortURL %>/delete"><button type="submit">Delete</button></form>
+    <form method="POST" action="/urls/<%= shortURL %>">
+        <input type="text" name="newLongURL" value="<%= longURL %>" ><button type="submit">Update</button>
+    </form>
     <!-- Add your EJS code here -->
 </body>
 </html>
