@@ -9,13 +9,27 @@ const bodyParser = require("body-parser");
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
 
+//URL database
 var urlDatabase = {
     "b2xVn2": "http://www.lighthouselabs.ca",
     "9sm5xK": "http://www.google.com"   
 };
-app.get("/", (req, res) => {
-    res.send("Hello!");
-});
+
+
+//User Database
+const users = { 
+    "userRandomID": {
+      id: "userRandomID", 
+      email: "user@example.com", 
+      password: "purple-monkey-dinosaur"
+    },
+   "user2RandomID": {
+      id: "user2RandomID", 
+      email: "user2@example.com", 
+      password: "dishwasher-funk"
+    }
+}   
+
 
 app.get("/urls", (req, res) => {
     let templateVars = { urls: urlDatabase, username: req.cookies['username'] };
@@ -41,6 +55,7 @@ app.get("/urls/:id", (req, res) => {
     res.render("urls_show", templateVars);
 });
 
+//Short URL redirects to the long URL (actual website) 
 app.get("/u/:shortURL", (req, res) => {
     let shortURL = req.params.shortURL;
     let longURL = urlDatabase[req.params.shortURL];
@@ -72,21 +87,61 @@ app.post("/login", (req, res) => {
     res.redirect('/urls');
 });
 
+//Add logout
 app.post("/logout", (req, res) => {
     let templateVars = { username: req.cookies['username'] };
     res.clearCookie('username');
     res.redirect('/urls');
 });
 
-app.get("/hello", (req, res) => {
-    res.send("<html><body>Hello <b>World</b></body></html>\n");
+//Add User Registration
+app.get("/register", (req, res) => {
+    res.render("register");
   });
+
+app.post("/register", (req, res) => {
+    res.cookie('email', req.body.email);
+    res.cookie('password', req.body.password);
+
+    // see if email and passwords are empty strings 
+    if (!req.body.email || !req.body.password) {
+        return res.status(400).send("Email and Password required");
+
+    }
+    // call the isEmailTaken function
+    if (isEmailTaken(req.body.email)) {
+        return res.status(400).send("Email is already taken");
+    };
+
+    let newUserID = 'user' + generateRandomString(3);
+    let newUser = {
+        id: newUserID,
+        email: req.body.email,
+        password: req.body.password,
+    }
+    users[newUser] = newUser;
+    res.cookie('userID', req.body.newUserID);
+    console.log('User Database',users);
+    res.redirect("/urls");
+});
+
 
 app.listen(PORT, () => {
     console.log(`Example app listening on port ${PORT}!`);
 });
 
-
+//Create shortURL ID
 function generateRandomString(end) {
     return randomString = Math.random().toString(36).substr(2).slice(0, end);
+}
+
+//Check if email is taken
+function isEmailTaken(email){
+    for(const userId in users){
+        const user = users[userId];
+        if(user.email === email){
+            return true;
+        }
+    }
+    return false;
 }
