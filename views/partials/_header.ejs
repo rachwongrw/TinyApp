@@ -6,8 +6,9 @@
 </head>
 <header>
     <a href="http://localhost:8080/urls/new"><h1>TinyApp</h1></a>
+    <h2> G'Day <%= username %>!</h2>
     <form method="POST" action="/login"> Username: 
-      <input type="text" name="username"><button type="submit">Sign In</button>
+      <input type="text" name="username"><button type="submit">Sign In</button><%= username %>
     </form>
 </header>
 <body>

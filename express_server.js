@@ -1,9 +1,12 @@
 var express = require("express");
 var app = express();
 var PORT = 8080;
+var cookieParser = require('cookie-parser')
+
 app.set("view engine", "ejs");
 
 const bodyParser = require("body-parser");
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
 
 var urlDatabase = {
@@ -15,12 +18,13 @@ app.get("/", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-    let templateVars = { urls: urlDatabase };
+    let templateVars = { urls: urlDatabase, username: req.cookies['username'] };
     res.render("urls_index", templateVars);
 });
 
 app.get("/urls/new", (req, res) => {
-    res.render("urls_new");
+    let templateVars = { username: req.cookies['username'] };
+    res.render("urls_new", templateVars);
 })
 
 //Add - New URL 
@@ -33,7 +37,7 @@ app.post("/urls", (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
-    let templateVars = { longURL: urlDatabase[req.params.id], shortURL: req.params.id };
+    let templateVars = { longURL: urlDatabase[req.params.id], shortURL: req.params.id, username: req.cookies['username'] };
     res.render("urls_show", templateVars);
 });
 
