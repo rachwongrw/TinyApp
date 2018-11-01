@@ -67,7 +67,14 @@ app.post("/urls/:id", (req, res) => {
 
 //Add Login and save Cookie
 app.post("/login", (req, res) => {
+    let templateVars = { username: req.cookies['username'] };
     res.cookie('username', req.body.username);
+    res.redirect('/urls');
+});
+
+app.post("/logout", (req, res) => {
+    let templateVars = { username: req.cookies['username'] };
+    res.clearCookie('username');
     res.redirect('/urls');
 });
 
