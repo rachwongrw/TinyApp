@@ -46,7 +46,7 @@ app.get("/urls", (req, res) => {
 app.get("/urls/new", (req, res) => {
     let user = users[req.cookies['user_id']];
     if (!user) {
-        res.redirect('/login').send("sucks to be u 🤷‍♀️");
+        res.send("sucks to be u 🤷‍♀️");
         return;
     }
     let templateVars = { user };
@@ -111,7 +111,6 @@ app.post("/login", (req, res) => {
     if (email && password) { // if email and password are entered, validate user
         var user = validateUser(email, password);
         if (user) {
-            console.log("It worked");
             res.cookie('user_id', user.id);
             res.redirect('/urls');
             return;
