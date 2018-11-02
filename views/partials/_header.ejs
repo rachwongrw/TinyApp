@@ -5,7 +5,7 @@
 </head>
 <header>
     <a href="http://localhost:8080/urls/new"><h1>TinyApp</h1></a>
-    <h2> G'Day <%= username %>!</h2>
+    <h2> G'Day <%= user.id %>!</h2>
       <% if(username){ %>
         <form method= "POST" action="/logout">
           <h1><button type="submit">Logout</button></h1>

@@ -32,12 +32,18 @@ const users = {
 
 
 app.get("/urls", (req, res) => {
-    let templateVars = { urls: urlDatabase, username: req.cookies['username'] };
+    let user = users[req.cookies['user_id']];
+    console.log("UserID: ", req.cookies.user_id, "USER: ", user);
+    let templateVars = {
+        urls: urlDatabase,
+        username: req.cookies['username'],
+        user
+    };
     res.render("urls_index", templateVars);
 });
 
 app.get("/urls/new", (req, res) => {
-    let templateVars = { username: req.cookies['username'] };
+    let templateVars = { username: req.cookies['username'], users };
     res.render("urls_new", templateVars);
 })
 
@@ -51,7 +57,7 @@ app.post("/urls", (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
-    let templateVars = { longURL: urlDatabase[req.params.id], shortURL: req.params.id, username: req.cookies['username'] };
+    let templateVars = { longURL: urlDatabase[req.params.id], shortURL: req.params.id, username: req.cookies['username'], users };
     res.render("urls_show", templateVars);
 });
 
@@ -112,15 +118,15 @@ app.post("/register", (req, res) => {
     if (isEmailTaken(req.body.email)) {
         return res.status(400).send("Email is already taken");
     };
-
+    // Registration 
     let newUserID = 'user' + generateRandomString(3);
     let newUser = {
         id: newUserID,
         email: req.body.email,
         password: req.body.password,
     }
-    users[newUser] = newUser;
-    res.cookie('user_id', newUserID);
+    users[newUserID] = newUser;
+    res.cookie('user_id', newUserID); 
     console.log('User Database', users);
     res.redirect("/urls");
 });
