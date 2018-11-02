@@ -15,7 +15,6 @@ var urlDatabase = {
     "9sm5xK": "http://www.google.com"   
 };
 
-
 //User Database
 const users = { 
     "userRandomID": {
@@ -33,21 +32,26 @@ const users = {
 
 app.get("/urls", (req, res) => {
     let user = users[req.cookies['user_id']];  
-    // console.log("UserID: ", req.cookies.user_id, "USER: ", user);
+    if (!user) {
+        res.send("sucks to be u 🤷‍♀️ Please sign in");
+        return;
+    }
     let templateVars = {
         urls: urlDatabase,
-        username: req.cookies['username'],
-        user 
+        user
     };
     res.render("urls_index", templateVars);
 });
 
 app.get("/urls/new", (req, res) => {
-    let user = users[req.cookies['user_id']]; 
-    // console.log("UserID: ", req.cookies.user_id);
-    let templateVars = { username: req.cookies['username'], user };
+    let user = users[req.cookies['user_id']];
+    if (!user) {
+        res.redirect('/login').send("sucks to be u 🤷‍♀️");
+        return;
+    }
+    let templateVars = { user };
     res.render("urls_new", templateVars);
-})
+});
 
 //Create Login Page
 app.get("/login", (req, res) => {
@@ -61,7 +65,6 @@ app.post("/urls", (req, res) => {
     let newURLid = generateRandomString(6);
     let newlongURL = req.body.longURL;
     urlDatabase[newURLid] = newlongURL;
-    // console.log(urlDatabase);
     res.redirect('/urls/' + newURLid);
 });
 
@@ -69,8 +72,7 @@ app.get("/urls/:id", (req, res) => {
     let user = users[req.cookies['user_id']];  
     let templateVars = { 
         longURL: urlDatabase[req.params.id], 
-        shortURL: req.params.id, 
-        username: req.cookies['username'], 
+        shortURL: req.params.id,  
         user
     };
     res.render("urls_show", templateVars);
@@ -103,14 +105,6 @@ app.post("/urls/:id", (req, res) => {
 
 
 //Add Login and save Cookie
-
-function validateUser(email, password) { //check user against users database
-    for (var id in users) {
-        if (users[id].email === email && users[id].password === password) {
-            return users[id];
-        }
-    }
-}
 app.post("/login", (req, res) => {
     let email = req.body.email;
     let password = req.body.password;
@@ -120,43 +114,26 @@ app.post("/login", (req, res) => {
             console.log("It worked");
             res.cookie('user_id', user.id);
             res.redirect('/urls');
-        } else {
+            return;
+        } else { //if email and password don't match
             res.status(403).send("Incorrect email and/or password");
+            return;
         }
-        return res.status(403).send('Not a valid email and/or password');
     }
-
-
-
-
-
-
-    // console.log(email, password);
-    // let user = users[req.cookies['user_id']];
-    // console.log(user);
-
-    // for (userkey in users) {
-    //     // console.log(users, "User ID:", users[userkey].id,"User email:", users[userkey].email, "User PW:", users[userkey].password )
-    //     if (email === users[userkey].email) {
-    //         console.log(email === users[userkey].email);
-    //     }
-    //     else {
-    //     res.status(403).send("Forbidden");
-    //     }
-    // }
-    // res.redirect('/urls');
-    
-    // let templateVars = { username: req.cookies['username'] };
-    // res.cookie('username', req.body.username);
-    // res.redirect('/urls');
 });
 
+function validateUser(email, password) { //check user against users database
+    for (var id in users) {
+        if (users[id].email === email && users[id].password === password) {
+            return users[id];
+        }
+    }
+}
 
 //Add Logout
 app.post("/logout", (req, res) => {
-    let templateVars = { username: req.cookies['username'] };
-    res.clearCookie('username');
-    res.redirect('/urls');
+    res.clearCookie('user_id');
+    res.redirect('/login');
 });
 
 //Add User Registration
@@ -185,7 +162,7 @@ app.post("/register", (req, res) => {
         password: req.body.password,
     }
     users[newUserID] = newUser;
-    res.cookie('user_id', newUserID); 
+    res.cookie('user_id', newUserID); //setting user_id to newUSerI
     console.log('User Database', users);
     res.redirect("/urls");
 });
