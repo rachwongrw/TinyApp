@@ -32,19 +32,28 @@ const users = {
 
 
 app.get("/urls", (req, res) => {
-    let user = users[req.cookies['user_id']];
-    console.log("UserID: ", req.cookies.user_id, "USER: ", user);
+    let user = users[req.cookies['user_id']];  
+    // console.log("UserID: ", req.cookies.user_id, "USER: ", user);
     let templateVars = {
         urls: urlDatabase,
         username: req.cookies['username'],
-        user
+        user 
     };
     res.render("urls_index", templateVars);
 });
 
 app.get("/urls/new", (req, res) => {
-    let templateVars = { username: req.cookies['username'], users };
+    let user = users[req.cookies['user_id']]; 
+    // console.log("UserID: ", req.cookies.user_id);
+    let templateVars = { username: req.cookies['username'], user };
     res.render("urls_new", templateVars);
+})
+
+//Create Login Page
+app.get("/login", (req, res) => {
+    let user = users[req.cookies['user_id']]; 
+    let templateVars = { user };
+    res.render("login", templateVars);
 })
 
 //Add - New URL 
@@ -57,7 +66,13 @@ app.post("/urls", (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
-    let templateVars = { longURL: urlDatabase[req.params.id], shortURL: req.params.id, username: req.cookies['username'], users };
+    let user = users[req.cookies['user_id']];  
+    let templateVars = { 
+        longURL: urlDatabase[req.params.id], 
+        shortURL: req.params.id, 
+        username: req.cookies['username'], 
+        user
+    };
     res.render("urls_show", templateVars);
 });
 
