@@ -21,12 +21,12 @@ const users = {
     "userRandomID": {
       id: "userRandomID", 
       email: "user@example.com", 
-      password: "purple-monkey-dinosaur"
+      password: "asdf"
     },
    "user2RandomID": {
       id: "user2RandomID", 
       email: "user2@example.com", 
-      password: "dishwasher-funk"
+      password: "qwerty"
     }
 }   
 
@@ -101,14 +101,58 @@ app.post("/urls/:id", (req, res) => {
     res.redirect('/urls');
 });
 
+
 //Add Login and save Cookie
+
+function validateUser(email, password) { //check user against users database
+    for (var id in users) {
+        if (users[id].email === email && users[id].password === password) {
+            return users[id];
+        }
+    }
+}
 app.post("/login", (req, res) => {
-    let templateVars = { username: req.cookies['username'] };
-    res.cookie('username', req.body.username);
-    res.redirect('/urls');
+    let email = req.body.email;
+    let password = req.body.password;
+    if (email && password) { // if email and password are entered, validate user
+        var user = validateUser(email, password);
+        if (user) {
+            console.log("It worked");
+            res.cookie('user_id', user.id);
+            res.redirect('/urls');
+        } else {
+            res.status(403).send("Incorrect email and/or password");
+        }
+        return res.status(403).send('Not a valid email and/or password');
+    }
+
+
+
+
+
+
+    // console.log(email, password);
+    // let user = users[req.cookies['user_id']];
+    // console.log(user);
+
+    // for (userkey in users) {
+    //     // console.log(users, "User ID:", users[userkey].id,"User email:", users[userkey].email, "User PW:", users[userkey].password )
+    //     if (email === users[userkey].email) {
+    //         console.log(email === users[userkey].email);
+    //     }
+    //     else {
+    //     res.status(403).send("Forbidden");
+    //     }
+    // }
+    // res.redirect('/urls');
+    
+    // let templateVars = { username: req.cookies['username'] };
+    // res.cookie('username', req.body.username);
+    // res.redirect('/urls');
 });
 
-//Add logout
+
+//Add Logout
 app.post("/logout", (req, res) => {
     let templateVars = { username: req.cookies['username'] };
     res.clearCookie('username');
