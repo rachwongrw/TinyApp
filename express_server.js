@@ -9,12 +9,6 @@ const bodyParser = require("body-parser");
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
 
-//URL database
-var urlDatabase = {
-    "b2xVn2": "http://www.lighthouselabs.ca",
-    "9sm5xK": "http://www.google.com"   
-};
-
 //User Database
 const users = { 
     "userRandomID": {
@@ -27,7 +21,22 @@ const users = {
       email: "user2@example.com", 
       password: "qwerty"
     }
-}   
+}  
+
+//URL database
+var urlDatabase = {
+    "b2xVn2": {
+        shortURL: "b2xVn2",
+        longURL: "http://www.lighthouselabs.ca",
+        userID: users['userRandomID'].id
+    },
+    "9sm5xK": {
+        shortURL: "9sm5xK",
+        longURL: "http://www.google.com",
+        userID: users['user2RandomID'].id
+    }
+}
+console.log(urlDatabase); 
 
 
 app.get("/urls", (req, res) => {
