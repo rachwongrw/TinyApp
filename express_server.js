@@ -46,7 +46,7 @@ app.get("/urls", (req, res) => {
 app.get("/urls/new", (req, res) => {
     let user = users[req.cookies['user_id']];
     if (!user) {
-        res.send("sucks to be u 🤷‍♀️");
+        res.redirect('/login');
         return;
     }
     let templateVars = { user };
