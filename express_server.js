@@ -40,15 +40,24 @@ var urlDatabase = {
 }
 console.log('URL database: ----------------- \n', urlDatabase); 
 
+function urlsForUser(id) { //id is the req.cookies['user_id'] as we've implemented in the function
+    let userURLs = {}; //templateVars is an object so we want to keep this variable an object too or we have to change other vars 
+    for (var urls in urlDatabase) { // for each key in the urlDatabase
+        if (id === urlDatabase[urls].userID) { //if id matchs id found in urlDatabase
+            userURLs[urls] = urlDatabase[urls];  //... let that object be passed into the userURLs object
+        }
+    }
+    return userURLs; 
+}
 
 app.get("/urls", (req, res) => {
     let user = users[req.cookies['user_id']];  
     if (!user) {
-        res.send("sucks to be u 🤷‍♀️ Please sign in");
+        res.send("Woops! 🤷‍♀️ Please sign in");
         return;
     }
     let templateVars = {
-        urlDatabase,
+        urlDatabase: urlsForUser(req.cookies['user_id']),
         user
     };
     res.render("urls_index", templateVars);
@@ -77,17 +86,18 @@ app.post("/urls", (req, res) => {
     let newURLid = generateRandomString(6);
     let newlongURL = req.body.longURL;
     urlDatabase[newURLid] = {shortURL: newURLid, longURL: newlongURL, userID: user.id };
-    let templateVars = { user, urlDatabase};
+    let templateVars = { user, urlDatabase };
     console.log('Adding object to urlDatabase: ------------ \n', urlDatabase);
     res.redirect('/urls/' + newURLid);
 });
 
 
 app.get("/urls/:id", (req, res) => {
-    let user = users[req.cookies['user_id']];  
-    // console.log('url Database:', urlDatabase);
-    // console.log('req parameters', req.params);
-    // console.log('url database - req params id', urlDatabase[req.params.id]);
+    let user = users[req.cookies['user_id']]; 
+    if (!user) {
+        res.send("🤷‍♀️ Please sign in");
+        return;
+    }
     let templateVars = { 
         longURL: urlDatabase[req.params.id].longURL, 
         shortURL: req.params.id,  
@@ -118,9 +128,7 @@ app.post("/urls/:id", (req, res) => {
     let shortURL = req.params.id;
     let userCookie = req.cookies['user_id'];
     let userInDB = urlDatabase[shortURL].userID;
-    console.log('user cookie: ', userCookie);
-    console.log('----------------------------\n print out users in database: ', userInDB);
-    console.log("urlDatabase[shortURL].shortURL", urlDatabase[shortURL].userID); // this is using the req.params.id to access the urlDatabase
+
     if (userInDB === userCookie) {
         urlDatabase[shortURL].longURL = newLongURL;
         res.redirect('/urls/' + shortURL) ;
@@ -144,7 +152,7 @@ app.post("/login", (req, res) => {
         } else { //if email and password don't match
             res.status(403).send("Incorrect email and/or password");
             return;
-        }
+        };
     }
 });
 
