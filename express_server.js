@@ -23,6 +23,8 @@ const users = {
     }
 }  
 
+console.log('Users database: ---------------\n', users)
+
 //URL database
 var urlDatabase = {
     "b2xVn2": {
@@ -30,13 +32,13 @@ var urlDatabase = {
         longURL: "http://www.lighthouselabs.ca",
         userID: users['userRandomID'].id
     },
-    "9sm5xK": {
-        shortURL: "9sm5xK",
-        longURL: "http://www.google.com",
+    "9sm5xK": { //shortURL is also the key to access this object!!
+        shortURL: "9sm5xK", //i.e. urlDatabase[shortURL].shortURL
+        longURL: "http://www.google.com", // i.e. urlDatabase[shortURL].longURL
         userID: users['user2RandomID'].id
     }
 }
-console.log(urlDatabase); 
+console.log('URL database: ----------------- \n', urlDatabase); 
 
 
 app.get("/urls", (req, res) => {
@@ -46,7 +48,7 @@ app.get("/urls", (req, res) => {
         return;
     }
     let templateVars = {
-        urls: urlDatabase,
+        urlDatabase,
         user
     };
     res.render("urls_index", templateVars);
@@ -71,16 +73,23 @@ app.get("/login", (req, res) => {
 
 //Add - New URL 
 app.post("/urls", (req, res) => {
+    let user = users[req.cookies['user_id']]; 
     let newURLid = generateRandomString(6);
     let newlongURL = req.body.longURL;
-    urlDatabase[newURLid] = newlongURL;
+    urlDatabase[newURLid] = {shortURL: newURLid, longURL: newlongURL, userID: user.id };
+    let templateVars = { user, urlDatabase};
+    console.log('Adding object to urlDatabase: ------------ \n', urlDatabase);
     res.redirect('/urls/' + newURLid);
 });
 
+
 app.get("/urls/:id", (req, res) => {
     let user = users[req.cookies['user_id']];  
+    // console.log('url Database:', urlDatabase);
+    // console.log('req parameters', req.params);
+    // console.log('url database - req params id', urlDatabase[req.params.id]);
     let templateVars = { 
-        longURL: urlDatabase[req.params.id], 
+        longURL: urlDatabase[req.params.id].longURL, 
         shortURL: req.params.id,  
         user
     };
@@ -105,11 +114,20 @@ app.post("/urls/:id/delete", (req, res) => {
 
 //Update URL 
 app.post("/urls/:id", (req, res) => {
-    let shortURL = req.params.id;
     let newLongURL = req.body.newLongURL;
-    urlDatabase[shortURL] = newLongURL;
-    console.log("Database: " + JSON.stringify(urlDatabase));
-    res.redirect('/urls');
+    let shortURL = req.params.id;
+    let userCookie = req.cookies['user_id'];
+    let userInDB = urlDatabase[shortURL].userID;
+    console.log('user cookie: ', userCookie);
+    console.log('----------------------------\n print out users in database: ', userInDB);
+    console.log("urlDatabase[shortURL].shortURL", urlDatabase[shortURL].userID); // this is using the req.params.id to access the urlDatabase
+    if (userInDB === userCookie) {
+        urlDatabase[shortURL].longURL = newLongURL;
+        res.redirect('/urls/' + shortURL) ;
+        return;
+    } else {
+        res.sendStatus(403);
+    }
 });
 
 
@@ -170,7 +188,7 @@ app.post("/register", (req, res) => {
         password: req.body.password,
     }
     users[newUserID] = newUser;
-    res.cookie('user_id', newUserID); //setting user_id to newUSerI
+    res.cookie('user_id', newUserID); //setting user_id to newUserID
     console.log('User Database', users);
     res.redirect("/urls");
 });

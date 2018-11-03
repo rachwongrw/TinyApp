@@ -12,14 +12,15 @@
     <h2>List of URLs and their shortened forms</h2>
 
     <ul>
-        <% for (shortURL in urls) { %>
-            <li><a href='/urls/<%= shortURL %>'><%= shortURL %></a> --> <%= urls[shortURL]%><form method ="POST" action="/urls/<%= shortURL %>/delete"><button type="submit">Delete</button></form></li>
+        <% for (shortURL in urlDatabase) { %>
+            <li><a href='/urls/<%= urlDatabase[shortURL].shortURL %>'><%= urlDatabase[shortURL].shortURL %></a> --> <%= urlDatabase[shortURL].longURL %>
+                <form method ="POST" action="/urls/<%= urlDatabase[shortURL].shortURL %>/delete"><button type="submit">Delete</button>
+                </form>
+            </li>
         <% }; %>
     </ul>
-
-    <a href='/urls/new'>Home</a>
-    
-    
-    <!-- Add your EJS code here -->
+    <form method ="GET" action="/urls/new"><button type="submit">Add new URL</button>
+    </form>
+    <a href='/urls/login'>Home</a>
 </body>
 </html>
