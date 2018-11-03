@@ -23,21 +23,23 @@ const users = {
     }
 }  
 
+
 console.log('Users database: ---------------\n', users)
 
 //URL database
-var urlDatabase = {
-    "b2xVn2": {
+const urlDatabase = {
+    'b2xVn2': {
         shortURL: "b2xVn2",
         longURL: "http://www.lighthouselabs.ca",
         userID: users['userRandomID'].id
     },
-    "9sm5xK": { //shortURL is also the key to access this object!!
-        shortURL: "9sm5xK", //i.e. urlDatabase[shortURL].shortURL
-        longURL: "http://www.google.com", // i.e. urlDatabase[shortURL].longURL
+    '9sm5xK': { //shortURL is also the key to access this object!!
+        shortURL: '9sm5xK', //i.e. urlDatabase[shortURL].shortURL
+        longURL: 'http://www.google.com', // i.e. urlDatabase[shortURL].longURL
         userID: users['user2RandomID'].id
     }
 }
+
 console.log('URL database: ----------------- \n', urlDatabase); 
 
 function urlsForUser(id) { //id is the req.cookies['user_id'] as we've implemented in the function
@@ -109,7 +111,7 @@ app.get("/urls/:id", (req, res) => {
 //Short URL redirects to the long URL (actual website) 
 app.get("/u/:shortURL", (req, res) => {
     let shortURL = req.params.shortURL;
-    let longURL = urlDatabase[req.params.shortURL];
+    let longURL = urlDatabase[req.params.shortURL].longURL;
     res.redirect(longURL);
 });
 

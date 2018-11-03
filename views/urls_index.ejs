@@ -13,7 +13,7 @@
 
     <ul>
         <% for (shortURL in urlDatabase) { %>
-            <li><a href='/urls/<%= urlDatabase[shortURL].shortURL %>'><%= urlDatabase[shortURL].shortURL %></a> --> <%= urlDatabase[shortURL].longURL %>
+            <li><a href='/u/<%= urlDatabase[shortURL].shortURL %>'><%= urlDatabase[shortURL].shortURL %></a> --> <%= urlDatabase[shortURL].longURL %>
                 <form method ="POST" action="/urls/<%= urlDatabase[shortURL].shortURL %>/delete"><button type="submit">Delete</button>
                 </form>
             </li>
