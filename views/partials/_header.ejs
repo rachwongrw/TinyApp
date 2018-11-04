@@ -5,15 +5,15 @@
 </head>
 <header>
     <a href="urls"><h1>TinyApp</h1></a>
-    <a href="register"><h4>Register</h4></a>
-    <a href="login"><h4>Login</h4></a>
     
       <% if( user.id ){ %>
         <h2> G'Day <%= user.email %>!</h2>
         <form method= "POST" action="/logout">
           <h1><button type="submit">Logout</button></h1>
         </form>
-      <% } else { %>  
+      <% } else { %>
+        <a href="login"><h4>Login</h4></a>
+        <a href="register"><h4>Register</h4></a>  
         <form method="POST" action="/login"> Username: 
           <input type="text" name="username"><button type="submit">Sign In</button><%= username %> 
         </form>

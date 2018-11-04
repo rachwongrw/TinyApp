@@ -81,14 +81,16 @@ app.get('/urls/:id', (req, res) => {
   const user = users[req.session.user_id];
   if (!user) {
     res.send('🤷‍♀️ Please sign in');
-    return;
+  } else if (req.session.user_id !== urlDatabase[req.params.id].userID) {
+    res.status(403).send('This link is not yours to view');
+  } else {
+    const templateVars = {
+      longURL: urlDatabase[req.params.id].longURL,
+      shortURL: req.params.id,
+      user,
+    };
+    res.render('urls_show', templateVars);
   }
-  const templateVars = {
-    longURL: urlDatabase[req.params.id].longURL,
-    shortURL: req.params.id,
-    user,
-  };
-  res.render('urls_show', templateVars);
 });
 
 //  Short URL redirects to the long URL (actual website)
@@ -138,14 +140,13 @@ app.post('/login', (req, res) => {
       res.redirect('/urls');
       return;
     } else { // if email and password don't match
-      res.status(403).send('Incorrect email and/or password');
+      res.status(403).send('Incorrect email and/or password. Otherwise please register');
       return;
     };
   }
 });
 
 function validateUser(email, password) { // check user against users database
-  console.log(email, password);
   for (var id in users) {
     if (users[id].email === email) {
       if (bcrypt.compareSync(password, users[id].password)) {
