@@ -4,12 +4,12 @@
   <title>TinyApp</title>
 </head>
 <header>
-    <a href="http://localhost:8080/urls/new"><h1>TinyApp</h1></a>
-    <a href="http://localhost:8080/register"><h4>Register</h4></a>
-    <a href="http://localhost:8080/login"><h4>Login</h4></a>
+    <a href="urls"><h1>TinyApp</h1></a>
+    <a href="register"><h4>Register</h4></a>
+    <a href="login"><h4>Login</h4></a>
     
       <% if( user.id ){ %>
-        <h2> G'Day <%= user.id %>!</h2>
+        <h2> G'Day <%= user.email %>!</h2>
         <form method= "POST" action="/logout">
           <h1><button type="submit">Logout</button></h1>
         </form>
@@ -20,6 +20,6 @@
       <% } %> 
 </header>
 <body>
-  <a href="http://localhost:8080/urls/">Database</a>
+  <a href="/urls/">Database</a>
 </body>
 </html>

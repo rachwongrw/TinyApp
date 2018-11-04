@@ -9,18 +9,21 @@
     <% include ./partials/_header %>
 </header>
 <body>
-    <h2>List of URLs and their shortened forms</h2>
+    <h2>URLs Page</h2>
 
     <ul>
         <% for (shortURL in urlDatabase) { %>
             <li><a href='/u/<%= urlDatabase[shortURL].shortURL %>'><%= urlDatabase[shortURL].shortURL %></a> --> <%= urlDatabase[shortURL].longURL %>
                 <form method ="POST" action="/urls/<%= urlDatabase[shortURL].shortURL %>/delete"><button type="submit">Delete</button>
                 </form>
+                <form method ="GET" action="/urls/<%= urlDatabase[shortURL].shortURL %>"><button type="submit">Update</button>
+                </form>
             </li>
         <% }; %>
     </ul>
     <form method ="GET" action="/urls/new"><button type="submit">Add new URL</button>
     </form>
-    <a href='/urls/login'>Home</a>
+    <br>
+    <a href='/urls'>Home</a>
 </body>
 </html>

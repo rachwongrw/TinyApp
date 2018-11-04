@@ -12,14 +12,18 @@
     <h2>The long URL and its shortened form</h2>
 
     <ul>
-            <li><%= longURL %> - <%= shortURL %></li>
+            <li><%= shortURL %> - <%= longURL %></li>
     </ul>
 
-    <a href='/urls/new'>Home</a> 
+     
     <form method ="POST" action="/urls/<%= shortURL %>/delete"><button type="submit">Delete</button></form>
+    <br>
     <form method="POST" action="/urls/<%= shortURL %>">
         <input type="text" name="newLongURL" value="<%= longURL %>" ><button type="submit">Update</button>
     </form>
+    <br>
+    <form method="GET" action="/urls/new"><button type="submit">Add a New URL</button></form>
+    <a href='/urls'>Home</a>
 </body>
 </html>
 
