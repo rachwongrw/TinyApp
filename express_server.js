@@ -81,6 +81,8 @@ app.get('/urls/:id', (req, res) => {
   const user = users[req.session.user_id];
   if (!user) {
     res.send('🤷‍♀️ Please sign in');
+  // } else if (urlDatabase[req.params.id].shortURL !== req.params.shortURL) { // to check if the ID exists
+  //   res.send('Not a valid URL');
   } else if (req.session.user_id !== urlDatabase[req.params.id].userID) {
     res.status(403).send('This link is not yours to view');
   } else {
@@ -120,8 +122,7 @@ app.post('/urls/:id', (req, res) => {
   let userInDB = urlDatabase[shortURL].userID;
   if (userInDB === userCookie) {
     urlDatabase[shortURL].longURL = newLongURL;
-    res.redirect('/urls/' + shortURL);
-    return;
+    res.redirect('/urls');
   } else {
     res.sendStatus(403);
   }
@@ -160,7 +161,7 @@ function validateUser(email, password) { // check user against users database
 app.post('/logout', (req, res) => {
   req.session = null;
   //   res.clearCookie('user_id');
-  res.redirect('/login');
+  res.redirect('/urls');
 });
 
 //  Add User Registration

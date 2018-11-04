@@ -4,7 +4,7 @@
   <title>TinyApp</title>
 </head>
 <header>
-    <a href="urls"><h1>TinyApp</h1></a>
+    <a href='/urls'><h1>TinyApp</h1></a>
     
       <% if( user.id ){ %>
         <h2> G'Day <%= user.email %>!</h2>
@@ -13,7 +13,7 @@
         </form>
       <% } else { %>
         <a href="login"><h4>Login</h4></a>
-        <a href="register"><h4>Register</h4></a>  
+          
         <form method="POST" action="/login"> Username: 
           <input type="text" name="username"><button type="submit">Sign In</button><%= username %> 
         </form>
