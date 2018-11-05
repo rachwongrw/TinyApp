@@ -1,13 +1,9 @@
 const express = require('express');
-
 const cookieSession = require('cookie-session');
-
-const bcrypt = require('bcrypt');
-
-const bodyParser = require('body-parser');
-
 const app = express();
 const PORT = 8080;
+const bodyParser = require('body-parser');
+const bcrypt = require('bcrypt');
 
 app.set('view engine', 'ejs');
 app.use(cookieSession({ keys: ['secret'] }));
@@ -27,7 +23,7 @@ function urlsForUser(id) {
 }
 
 app.get('/', (req, res) => {
-  let user = users[req.session.user_id];
+  const user = users[req.session.user_id];
   if (!user) {
     res.redirect('/login');
   } else {
@@ -49,12 +45,12 @@ app.get('/urls', (req, res) => {
 });
 
 app.get('/urls/new', (req, res) => {
-  let user = users[req.session.user_id];
+  const user = users[req.session.user_id];
   if (!user) {
     res.redirect('/login');
     return;
   }
-  let templateVars = { user };
+  const templateVars = { user };
   res.render('urls_new', templateVars);
 });
 
@@ -72,7 +68,6 @@ app.post('/urls', (req, res) => {
   let newlongURL = req.body.longURL;
   urlDatabase[newURLid] = { shortURL: newURLid, longURL: newlongURL, userID: user.id };
   let templateVars = { user, urlDatabase };
-  console.log('Adding object to urlDatabase: ------------ \n', urlDatabase);
   res.redirect('/urls/' + newURLid);
 });
 
@@ -81,8 +76,6 @@ app.get('/urls/:id', (req, res) => {
   const user = users[req.session.user_id];
   if (!user) {
     res.send('🤷‍♀️ Please sign in');
-  // } else if (urlDatabase[req.params.id].shortURL !== req.params.shortURL) { // to check if the ID exists
-  //   res.send('Not a valid URL');
   } else if (req.session.user_id !== urlDatabase[req.params.id].userID) {
     res.status(403).send('This link is not yours to view');
   } else {
@@ -109,6 +102,7 @@ app.get('/urls.json', (req, res) => {
   res.json(urlDatabase);
 });
 
+//  Delete URL
 app.post('/urls/:id/delete', (req, res) => {
   delete urlDatabase[req.params.id];
   res.redirect('/urls');
@@ -160,7 +154,7 @@ function validateUser(email, password) { // check user against users database
 //  Add Logout
 app.post('/logout', (req, res) => {
   req.session = null;
-  //   res.clearCookie('user_id');
+  res.clearCookie('user_id');
   res.redirect('/urls');
 });
 
@@ -185,6 +179,7 @@ function generateRandomString(end) {
   return randomString = Math.random().toString(36).substr(2).slice(0, end);
 }
 
+//  Register
 app.post('/register', (req, res) => {
   req.session.email = req.body.email;
   req.session.password = req.body.password;
@@ -197,7 +192,6 @@ app.post('/register', (req, res) => {
     return res.status(400).send('Email is already taken');
   }
 
-  // Registration
   const newUserID = 'user' + generateRandomString(3);
   const password = req.body.password;
   const hashedPassword = bcrypt.hashSync(password, 10);
@@ -209,7 +203,6 @@ app.post('/register', (req, res) => {
 
   users[newUserID] = newUser;
   req.session.user_id = newUserID;
-  console.log('User Database with new registrar: ', users);
   res.redirect('/urls');
 });
 
